@@ -18,18 +18,33 @@ isDecimal = False
 # Definindo as funções
 
 
+def clear_screen():
+    global all_values_digit
+    global all_values_math
+    all_values_digit = '0'
+    all_values_math = ''
+    app_labeldigit.config(text=all_values_digit)
+    app_labelmath.config(text=all_values_math)
+
+
 def evaluate(digit):
     global all_values_digit
     global all_values_math
     global math
     global last_digit
+    last_ocurrence = 0
     if last_digit in ('+', '-', '*', '/', '%'):
         all_values_math = all_values_math[:-1] + digit
     elif last_digit == '=':
         if digit in ('+', '-', '*', '/', '%'):
             all_values_math = str(math) + digit
-        # elif digit == '=':
-
+        elif digit == '=':
+            for char in '+-*/%':
+                if all_values_math.rfind(char) > last_ocurrence:
+                    last_ocurrence = all_values_math.rfind(char)
+            if last_ocurrence != 0:
+                all_values_math = str(math) + all_values_math[last_ocurrence:]
+                math = eval(all_values_math[:-1])
     else:
         all_values_math += all_values_digit + digit
         math = eval(all_values_math[:-1])
@@ -47,7 +62,8 @@ def updatedigit(digit):
     global decimals
     global isDecimal
     global last_digit
-    last_digit = digit
+    if last_digit == '=':
+        clear_screen()
     if digit in ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
         if len(all_values_digit) == 1 and all_values_digit == '0':
             all_values_digit = digit
@@ -63,6 +79,7 @@ def updatedigit(digit):
             app_labeldigit.config(text=format_decimal(
                 float(all_values_digit), decimals) + '.')
             all_values_digit += '.'
+    last_digit = digit
 
 # Função para alterar a quantidade de decimais
 
@@ -107,7 +124,7 @@ app_labeldigit.place(x=0, y=0)
 # Botão C (Clear), % (Porcentagem) e / (Divisão)
 button_c = tk.Button(frame_buttons, text="C", width=11, height=2,
                      bg=button_grey, font=('Ivy 13 bold'), relief='raised',
-                     overrelief='ridge', command=lambda: updatedigit('c'))
+                     overrelief='ridge', command=lambda: clear_screen())
 button_c.place(x=0, y=0)
 button_percentage = tk.Button(frame_buttons, text='%',
                               width=5, height=2, bg=button_grey,
