@@ -61,11 +61,10 @@ def evaluate(digit):
 
 def updatedigit(digit):
     global all_values_digit
-    global decimalsisDecimal
     global last_digit
     global decimals
 
-    isDecimal = 0
+    is_Decimal = False
 
     if last_digit == '=':
         clear_screen()
@@ -75,13 +74,13 @@ def updatedigit(digit):
             all_values_digit = digit
         else:
             all_values_digit += digit
-            if isDecimal:
+            if is_Decimal:
                 decimals += 1
         app_labeldigit.config(text=format_decimal(
             float(all_values_digit), decimals))
     else:
-        if not isDecimal:
-            isDecimal = True
+        if not is_Decimal:
+            is_Decimal = True
             app_labeldigit.config(text=format_decimal(
                 float(all_values_digit), decimals) + '.')
             all_values_digit += '.'
